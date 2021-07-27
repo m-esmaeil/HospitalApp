@@ -1,0 +1,235 @@
+﻿@model HospitalApp.ViewModel.TransactionsVM
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h3 class="jumbotron p-3 text-right font-bold" style="color:darkgray;">
+    انشاء قيد جديد
+    <i class="fas fa-edit"></i>
+</h3>
+
+<div dir="rtl">
+        <div class="col-md-8 shadow border-0 rounded-lg mx-auto p-3">
+            <form asp-action="Create">
+                @{ 
+                    if (ViewBag.TransSaveMSG != null)
+                    {
+                                <div class="text-right mb-2">
+                                    <i class="fas fa-exclamation-circle text-danger"></i>
+                                    <span class="text-danger font-bold">@ViewBag.TransSaveMSG</span>
+                                </div>
+                    }
+                }
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-row">
+                    <div class="input-group col-md-6" dir="rtl">
+                        <div class="input-group-append d-block">
+                            <span class="input-group-text">رقم القيد</span>
+                        </div>
+                        <input asp-for="EntrySerialize.Serial" type="text" disabled class="form-control text-center" value="@Model.serial2Display()" />
+                        <span asp-validation-for="EntrySerialize.Serial" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                         <input type="datetime-local" asp-for="DateVM" class="form-control col-12" placeholder="وصف القيد" />
+                         <span asp-validation-for="DateVM" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-inline col-12">
+                        <input type="text" asp-for="EntrySerialize.Description" class="form-control col-12" placeholder="وصف القيد" />
+                        <span asp-validation-for="EntrySerialize.Description"></span>
+                    </div>
+                </div>
+                <div class="container mt-3"></div>
+                <div class="form-row rowCount" id="rowNum">
+                    <div class="form-inline mt-2 col-5">
+                        <select asp-for="AccountTreeIdVM" class="form-control shadow border-secondary col-12" name="item-name">
+                            <option selected>--- اسم الحساب---</option>
+                            @foreach (var item in Model.AccountsTreeList)
+                            {
+                                <option value="@Model.AccountTreeIdVM">@item.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="AccountTreeIdVM" class="text-danger"></span>
+                    </div>
+                    <div class="form-inline mt-2 col-3">
+                        <input type="text" onchange="getBalance()" class="form-control shadow border-secondary col-12 debit" placeholder="مدين"  name="item-debit"/>
+                        <span asp-validation-for="ValueDebit" class="text-danger"></span>
+                    </div>
+                    <div class="form-inline mt-2 col-3">
+                        <input type="text" onchange="getBalance()" class="form-control shadow border-secondary col-12 credit" placeholder="دائن" name="item-credit"/>
+                        <span asp-validation-for="ValueCredit" class="text-danger"></span>
+                    </div>
+                    <div class="form-inline mt-2 col-1">
+                        <i class="fas fa-plus-circle text-primary font-bold add-row" style="font-size:20px; cursor:pointer;"></i>
+                        
+                    </div>
+                </div>
+
+                <!-- Row To Display Balnce of Entry -->
+                <div class="form-row mt-3">
+                    <div class="form-inline mt-3 col-5">
+                        <input type="text" id="BalanceMSG" value="0" disabled class="border-0 text-danger col-12" />
+                    </div>
+                    <div class="form-inline mt-3 col-3">
+                        <input type="number" id="BalanceDebit" value="0" disabled class="form-control border-danger shadow col-12 d-none" />
+                    </div>
+                    <div class="form-inline mt-3 col-3">
+                        <input type="number" id="BalanceCredit" value="0" disabled class="form-control border-danger shadow col-12 d-none" />
+                    </div>
+                    <div class="form-inline mt-3 col-1 d-none"></div>
+                </div>
+
+                <!-- Row To display Actions -->
+                <div class="form-inline mt-5 d-flex justify-content-around p-0">
+                    <a asp-action="Index" class="btn btn-secondary mr-0" style="width:48%;">Back to List <i class="fas fa-home"></i></a>
+                    <button type="submit" class="btn btn-primary ml-0" style="width:48%;" onclick="listOfObj()">Save <i class="fas fa-save"></i></button>
+                </div>
+            </form>
+        </div>
+</div>
+
+<!-- Template To Add Row -->
+<div id="templateRow" style="display:none;">
+    <div class="form-row rowCount">
+        <div class="form-inline mt-2 col-md-5">
+            <select asp-for="AccountTreeIdVM" class="form-control shadow border-secondary col-12" name="item-name">
+                <option value="none" selected>--- اسم الحساب---</option>
+                @foreach (var item in Model.AccountsTreeList)
+                {
+                    <option value="@Model.AccountTreeIdVM">@item.Name</option>
+                }
+            </select>
+            <span asp-validation-for="AccountTreeIdVM" class="text-danger"></span>
+        </div>
+        <div class="form-inline mt-2 col-3">
+            <input type="text" value="" onchange="getBalance()" class="form-control shadow border-secondary col-12 debit" placeholder="مدين" name="item-debit" />
+            <span asp-validation-for="ValueDebit" class="text-danger"></span>
+        </div>
+        <div class="form-inline mt-2 col-3">
+            <input type="text" value="" onchange="getBalance()" class="form-control shadow border-secondary col-12 credit" placeholder="دائن" name="item-credit" />
+            <span asp-validation-for="ValueCredit" class="text-danger"></span>
+        </div>
+        <div class="form-inline mt-2 col-1">
+            <i class="fas fa-plus-circle text-primary font-bold add-row" style="font-size:20px; cursor:pointer;"></i>
+            <i class="fas fa-trash text-danger font-bold mr-2 del-row" style="font-size:20px; cursor:pointer;"></i>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+<script>
+
+    // function to add/remove row of journal entry
+    $(function () {
+        $(document).on("click", ".add-row", function () {
+            
+            var Row2Add = $("#templateRow").html();
+
+            $(this).parent().parent().after(Row2Add);
+        });
+
+        $(document).on("click", ".del-row", function () {
+            var n = 
+            $(this).parent().parent().remove();
+
+        });
+    });
+
+    // function to have balance between input debit and credit
+    function getBalance() {
+
+        var sumDebit = document.querySelectorAll('.debit');
+        var debitToT = 0;
+
+        for (var i = 0; i < sumDebit.length; i++) {
+
+            if (parseInt(sumDebit[i].value)) {
+
+                debitToT += parseInt(sumDebit[i].value);
+            }
+        }
+
+        var sumCredit = document.querySelectorAll(".credit");
+        var creditToT = 0;
+
+        for (var d = 0; d < sumCredit.length; d++) {
+
+            if (parseInt(sumCredit[d].value)) {
+
+                creditToT += parseInt(sumCredit[d].value);
+            }
+        }
+
+        var Balance = debitToT - creditToT;
+        var BalanceCr = creditToT - debitToT;
+
+        if (debitToT > creditToT) {
+
+            document.getElementById("BalanceMSG").value = "القيد غير متوازن";
+            document.getElementById("BalanceDebit").value = Balance;
+            document.getElementById("BalanceCredit").value = 0;
+            document.getElementById("BalanceDebit").classList.remove("d-none");
+            document.getElementById("BalanceCredit").classList.add("d-none");
+            document.getElementById("BalanceMSG").classList.add("text-danger");
+            document.getElementById("BalanceMSG").classList.remove("text-success");
+            return false;
+
+        } if (creditToT > debitToT) {
+
+            document.getElementById("BalanceMSG").value = "القيد غير متوازن";
+            document.getElementById("BalanceCredit").value = BalanceCr;
+            document.getElementById("BalanceDebit").value = 0;
+            document.getElementById("BalanceCredit").classList.remove("d-none");
+            document.getElementById("BalanceDebit").classList.add("d-none");
+            document.getElementById("BalanceMSG").classList.add("text-danger");
+            document.getElementById("BalanceMSG").classList.remove("text-success");
+            return false;
+        } else {
+            document.getElementById("BalanceDebit").value = 0;
+            document.getElementById("BalanceCredit").value = 0;
+            document.getElementById("BalanceCredit").classList.add("d-none");
+            document.getElementById("BalanceDebit").classList.add("d-none");
+            document.getElementById("BalanceMSG").value = "قيد صحيح !!";
+            document.getElementById("BalanceMSG").classList.remove("text-danger");
+            document.getElementById("BalanceMSG").classList.add("text-success");
+        }
+    };
+
+
+    // function to make array of object from list input (name, credit, debit)
+    function listOfObj() {
+
+        let itemNameList = document.querySelectorAll("item-name").values();
+        let itemDebitList = document.getElementsByName("item-debit").values();
+        let itemCreditList = document.getElementsByName("item-credit").values();
+
+        //let itemNames = [], itemDebits = [], itemCredits = [];
+
+        //for (var i = 0; i < itemNameList.length; i++) {
+        //    itemNames.push(document.querySelectorAll("item-name")[i].value);
+        //    itemDebits.push(document.querySelectorAll("item-debit")[i].value);
+        //    itemCredits.push(document.querySelectorAll("item-credit")[i].value);
+        //}
+
+       
+
+        let objArr = itemNameList.map((item, index) => {
+            return {
+                name: item,
+                debitVAl: itemDebitList[index],
+                creditVal: itemCreditList[index]
+            }
+        });
+
+        return objArr();
+    }
+</script>
+
+}

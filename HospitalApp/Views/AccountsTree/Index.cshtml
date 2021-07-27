@@ -1,0 +1,60 @@
+﻿@model IEnumerable<HospitalApp.Models.AccountsTree>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<h3 class="jumbotron p-3 text-center">شجرة الحسابات</h3>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-outline-primary">انشاء حساب جديد</a>
+</p>
+@if (ViewBag.MSGDel != null)
+{
+    <h4 class="text-danger">@ViewBag.MSGDel</h4>
+}
+@if (ViewBag.MSGConfirmDel != null)
+{
+    <h4 class="text-danger">@ViewBag.MSGConfirmDel</h4>
+}
+
+<table class="table table-sm table-hover table-striped text-center" dir="rtl">
+    <thead class="bg-dark text-white">
+        <tr>
+            <th>
+                الحساب الرئيسي
+            </th>
+            <th>
+                تابع للحساب
+            </th>
+            <th>
+                اسم الحساب
+            </th>
+            <th>
+                الاجراء
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Categories.Name
+                </td>
+                <td>
+                    @item.FollowTo
+                    @*@ViewBag.getFollowName(item.FollowTo)*@
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" 
+                       onclick="return confirm('Are you sure to Delete item ???');">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

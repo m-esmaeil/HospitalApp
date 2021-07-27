@@ -1,0 +1,27 @@
+﻿@model HospitalApp.Models.Category
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h3 class="jumbotron p-3 font-calibri text-center">تفاصيل الحساب</h3>
+
+
+<div dir="rtl" class="mx-auto p-3" style="width: 450px; height:250px;">
+    <div>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">الرجوع للقائمة الرئيسية</a>
+    </div>
+    <div class="text-right d-flex flex-column shadow p-3 mt-2">
+        <div class="text-right bg-dark rounded-sm py-1 px-3">
+            <h5 class="font-calibri text-light"><u>اسم الحساب</u></h5>
+        </div>
+        <div class="col text-center p-3 bg-light">
+            @Model.Name
+        </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-info btn-block">Edit</a>
+        </div>
+    </div>
+</div>
+
+

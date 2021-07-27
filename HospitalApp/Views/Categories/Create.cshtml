@@ -1,0 +1,35 @@
+﻿@model HospitalApp.Models.Category
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2 class="jumbotron p-3 font-calibri text-center">انشاء حساب رئيسي جديد</h2>
+
+
+<hr />
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4 border-0 shadow pb-4 px-4 pt-3">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group d-flex flex-column">
+                <label asp-for="Name" class="control-label ml-auto font-calibri" style="font-size:20px;">اسم الحساب</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="save" class="btn btn-primary btn-block" />
+            </div>
+        </form>
+        <div>
+            <br />
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">الرجوع للقائمة الرئيسية</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

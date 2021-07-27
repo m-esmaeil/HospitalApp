@@ -1,0 +1,27 @@
+﻿.book{
+    width: 250px;
+    height: 180px;
+    background-color: #0094ff;
+    position: relative;
+    cursor: pointer;
+}
+
+.book::after{
+    content: "";
+    width: 10px;
+    height: 100%;
+    top: 0px;
+    left: 15px;
+    background-color: white;
+    position: absolute;
+}
+
+.book:hover i{
+    transition: 0.5s;
+    transform: rotate(360deg);
+
+}
+
+.font-bold{
+    font-weight : bolder;
+}
