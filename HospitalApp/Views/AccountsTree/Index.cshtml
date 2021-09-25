@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HospitalApp.Models.AccountsTree>
+﻿@model IEnumerable<AccountsTree>
 
 @{
     ViewData["Title"] = "Index";
@@ -42,8 +42,10 @@
                     @item.Categories.Name
                 </td>
                 <td>
-                    @item.FollowTo
-                    @*@ViewBag.getFollowName(item.FollowTo)*@
+                    @if (item.Parent != null)
+                    {
+                    <span>@item.Parent.Name</span>
+                    }
                 </td>
                 <td>
                     @item.Name

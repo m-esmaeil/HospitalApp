@@ -20,7 +20,10 @@
                 <div class="form-inline mt-3">
                     <label asp-for="FollowTo" class="control-label ml-auto font-bold">تابع لحساب</label>
                     <select asp-for="FollowTo" class="form-control w-50">
-                        <option value="@Model.FollowTo"></option>
+                        @if (Model.Parent != null)
+                        {
+                            <option value="@Model.Id">@Model.Parent.Name</option>
+                        }
                         <option value="">---حساب رئيسي---</option>
                         @foreach (var item in ViewBag.Acc as IEnumerable<AccountsTree>)
                         {

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<HospitalApp.Models.Transaction>
+
+@{
+    if (ViewBag.startDate != null)
+    {
+        <h5 class="shadow bg-success p-3 jumbotron text-center text-white font-bold">
+            <span class="d-block mb-2">الاســـــــتاذ المســـــاعد</span><i class="fas fa-book-open"></i>
+            في الفترة من <span class="border rounded-lg px-2 mx-2 btn-outline-light">@ViewBag.startDate</span> الي  <span class="border rounded-lg px-2 mr-2 btn-outline-light">@ViewBag.endDate</span>
+        </h5> }
+    else
+    {
+        <h3 class="shadow bg-success p-3 jumbotron text-center text-white font-bold">الاســـــــتاذ المســـــاعد <i class="fas fa-book-open"></i></h3>
+    }
+
+}
+
+<!-- Search Row in the top -->
+<div class="container d-flex flex-row" dir="rtl">
+    <form asp-action="LedgerAccounts" class="form-inline col-md-8 pr-0">
+        <input type="text" name="id" id="AccName" class="form-control form-control-sm col ml-2 mb-2" placeholder="اسم الحساب" />
+        <span class="form-text ml-2 mb-2 mr-5"> مـــــن</span>
+        <input type="date" name="startDate" value="@ViewBag.startDate" class="form-control form-control-sm col ml-2 mb-2" />
+        <span class="form-text ml-2 mb-2">إلــي</span>
+        <input type="date" name="endDate" value="@ViewBag.endDate" class="form-control form-control-sm col mb-2" />
+        <button type="submit" class="btn btn-sm btn-warning mr-2 mb-2 font-bold text-white col" style="cursor:pointer;">
+            <i class="fas fa-search ml-2"></i> بحث
+        </button>
+    </form>
+    <a class="btn btn-sm btn-outline-secondary mb-2 mr-auto" asp-controller="Home" asp-action="Index"><i class="fas fa-directions"></i>  للصفحة الرئيسية</a>
+</div>
+
+<div class="container mt-3">
+    <table class="table table-sm table-hover table-striped text-center" dir="rtl">
+        <thead class="bg-success text-white font-bold">
+            <tr>
+                <th>التاريـــخ</th>
+                <th>البيـــان</th>
+                <th>مدين</th>
+                <th>دائن</th>
+                <th>الرصيد</th>
+                <th>الاجراءات</th>
+            </tr>
+        </thead>
+        <!-- content data in Table -->
+        <tbody>
+            @foreach (var item in Model.GroupBy(x => x.AccountsTree.Name))
+            {
+                <tr class="text-white" style="background-color: #C5C5C5;">
+                    <td></td>
+                    <td colspan="3" class="text-right font-bold">@item.Key</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                decimal? balance = 0;
+                @foreach (var itemDTL in item.ToList())
+                {
+                    <tr>
+                        <td style="width:20%;">
+                            @itemDTL.entriesSerialize.date
+                        </td>
+                        <td style="width:40%;">
+                            @itemDTL.entriesSerialize.Description
+                        </td>
+                        <td>
+                            @itemDTL.ValuDebit
+                        </td>
+                        <td>
+                            @itemDTL.ValueCredit
+                        </td>
+                         @{decimal x = ((itemDTL.ValuDebit ?? 0) - (itemDTL.ValueCredit ?? 0));}
+                        <td>
+                            @(balance += x)
+                        </td>
+                        <td>
+                            <a asp-action="Details" class="btn btn-sm btn-outline-success">
+                                Details <i class="fas fa-info"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -23,11 +23,10 @@ namespace HospitalApp.Controllers
         {
             var accounts = _context.AccountsTree
                                     .Include(z => z.Categories)
-                                    .OrderBy(z => z.Categories)
-                                    .ThenBy(a => a.FollowTo)
+                                    .Include(z => z.Parent)
                                     .ToList();
 
-            //ViewBag.getFollowName = FollowToVAL(null);
+            
 
             return View(accounts);
         }
@@ -37,8 +36,9 @@ namespace HospitalApp.Controllers
         {
             var Acc2Display = _context.AccountsTree
                                       .Include(s => s.Categories)
+                                      .Include(x => x.Parent)
                                       .FirstOrDefault(z => z.Id == id);
-            
+
             return View(Acc2Display);
         }
 
@@ -119,6 +119,7 @@ namespace HospitalApp.Controllers
         {
             var Acc2Display = _context.AccountsTree
                                       .Include(x => x.Categories)
+                                      .Include(x => x.Parent)
                                       .FirstOrDefault(s => s.Id == id);
             
             ViewBag.Acc = _context.AccountsTree.ToList();
@@ -176,16 +177,16 @@ namespace HospitalApp.Controllers
 
 
         // method To return value of FollowTo property in table
-        public string FollowToVAL(int? id)
-        {
-            if (id == null)
-            {
-                return "";
-            }
-            return _context.AccountsTree
-                           .Where(z => z.Id == id)
-                           .Select(x => x.Name)
-                           .ToString();
-        }
+        //public string FollowToVAL(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return "";
+        //    }
+        //    return _context.AccountsTree
+        //                   .Where(z => z.Id == id)
+        //                   .Select(x => x.Name)
+        //                   .ToString();
+        //}
     }
 }

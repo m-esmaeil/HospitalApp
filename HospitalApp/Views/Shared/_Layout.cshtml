@@ -22,22 +22,27 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-                            <i class="fab fa-dashcube"></i> Dashboard
+                                <i class="fab fa-dashcube"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                <i class="fas fa-user-secret"></i> Privacy
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AccountsTree" asp-action="Index">
+                                <i class="fas fa-tree"></i> AccountsTree
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">
-                                <i class="fab fa-chrome"></i> Categories
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ReportsStatement" asp-action="BalanceSheet">
+                                <i class="fas fa-balance-scale"></i> BalanceSheet
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">
-                                <i class="fas fa-money-bill"></i> Transactions
+                                <i class="fas fa-layer-group"></i> Transactions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ReportsStatement" asp-action="LedgerAccounts">
+                                <i class="fas fa-book-open"></i> LedgerAccount
                             </a>
                         </li>
                     </ul>

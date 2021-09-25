@@ -24,15 +24,18 @@ namespace HospitalApp.Controllers
             var Trans2Display = _context.Transactions
                                         .Include(x => x.AccountsTree)
                                         .Include(x => x.entriesSerialize)
-                                        .OrderBy(x => x.SerialNumberId)
+                                        .Include(x => x.AccountsTree.Categories)
+                                        .OrderBy(x => x.entriesSerialize.Serial)
+                                        .ThenBy(x => x.Id)
                                         .ToList();
-
+                
             return View(Trans2Display);
         }
 
         // GET: TransactionsController/Details/5
         public ActionResult Details(int id)
         {
+            
             return View();
         }
 
@@ -41,7 +44,9 @@ namespace HospitalApp.Controllers
         {
             var Trans2Create = new TransactionsVM
             {
-                AccountsTreeList = _context.AccountsTree.ToList()
+                AccountsTreeList = _context.AccountsTree.ToList(),
+                DateVM = DateTime.Now,
+                SerialNumberIdVM = _context.EntriesSerialize.Count() + 1
             };
 
 
@@ -51,99 +56,204 @@ namespace HospitalApp.Controllers
         // POST: TransactionsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(TransactionsVM transVM, IList<object> objArr)
+        public ActionResult Create(TransactionForm transForm)
         {
+            var Trans2Create = new TransactionsVM
+            {
+                AccountsTreeList = _context.AccountsTree.ToList(),
+                DateVM = DateTime.Now,
+                SerialNumberIdVM = _context.EntriesSerialize.Count() + 1
+            };
+
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var trans2add = new List<Transaction>();
-
-                    EntriesSerialize serialeNum = new EntriesSerialize()
-                    {
-                        Description = transVM.EntrySerialize.Description
-                    };
-
-                    foreach (var item in transVM.AccountsTreeList)
-                    {
-                        var transdata = new Transaction
-                        {
-                            Date = transVM.DateVM,
-                            SerialNumberId = serialeNum.Id,
-                            ValuDebit = transVM.ValueDebit,
-                            ValueCredit = transVM.ValueCredit,
-                            AccountTreeId = transVM.AccountTreeIdVM,
-                        };
-                        trans2add.Add(transdata);
-                    }
-
-                    var sumDebit = trans2add.Sum(x => x.ValuDebit);
-                    var sumCredit = trans2add.Sum(x => x.ValueCredit);
+                    var sumDebit = transForm.debit.Sum();
+                    var sumCredit = transForm.credit.Sum();
 
                     if (sumCredit != sumDebit)
                     {
-                        ViewBag.TransSaveMSG = "القيد غير متوازن";
-                        return View(trans2add);
+                        ViewBag.TransNotSaveMSG = "القيد غير متوازن";
+                        return View(Trans2Create);
                     }
 
-                    _context.Transactions.AddRange(trans2add);
+                    var serialNum = _context.EntriesSerialize.Count() + 1;
+
+                    EntriesSerialize serialeNum = new EntriesSerialize()
+                    {
+                        Description = transForm.Description,
+                        Serial = serialNum,
+                        date = transForm.DateVm
+                    };
+
+                    _context.EntriesSerialize.Add(serialeNum);
                     _context.SaveChanges();
+
+                    var lastSerialNum = _context.EntriesSerialize.Max(x => x.Id);
+
+                    for (int i = 0; i < transForm.account.Length; i++)
+                    {
+                        var trans2Add = new Transaction()
+                        {
+                            AccountTreeId = transForm.account[i],
+                            ValuDebit = transForm.debit[i],
+                            ValueCredit = transForm.credit[i],
+                            SerialNumberId = lastSerialNum
+                        };
+
+                        _context.Transactions.Add(trans2Add);
+                    }
+
+                    _context.SaveChanges();
+                    ViewBag.TransSaveMSG = "تم حفظ القيد بنجاح !";
 
                     return RedirectToAction(nameof(Index));
                 }
-
-                ViewBag.TransSaveMSG = "لم يتم حفظ القيد ";
-                return View(transVM);
+                ModelState.AddModelError("", "لم يتم حفظ القيد ,,,,");
 
             }
             catch
             {
-                transVM.AccountsTreeList = _context.AccountsTree.ToList();
+                
                 ViewBag.TransSaveMSG = "لم يتم حفظ القيد ";
-                return View(transVM);
+                return View(transForm);
             }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TransactionsController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+           var Trans2Edite = _context.Transactions
+                                     .Where(x => x.entriesSerialize.Id == id)
+                                     .Include(x => x.entriesSerialize)
+                                     .Include(x => x.AccountsTree)
+                                     .ToList();
+            if (Trans2Edite == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            ViewBag.serialOfEntryJournal = id;
+            ViewBag.AccountsTreeList = _context.AccountsTree.ToList();
+
+            return View(Trans2Edite);
         }
 
         // POST: TransactionsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int serialNumberId, TransactionForm transactionForm)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var sumDebit = transactionForm.debit.Sum();
+                var sumCredit = transactionForm.credit.Sum();
+
+                if (sumCredit != sumDebit)
+                {
+                    ModelState.AddModelError("", "القيد غير متوازن");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    List<Transaction> oldTransactions = _context.Transactions
+                                                            .Where(x => x.entriesSerialize.Id == serialNumberId)
+                                                            .Include(x => x.entriesSerialize)
+                                                            .Include(x => x.AccountsTree)
+                                                            .ToList();
+
+                    // add new transactions => id=0
+                    var submittedTransactions = transactionForm.GetTransactions(serialNumberId);
+                    _AddNewTransactions(submittedTransactions);
+
+                    // update old transactions
+                    // remove deleted transactions
+                    _UpdateOrDeletedExistingTransactions(oldTransactions, submittedTransactions);
+
+                    _context.SaveChanges();
+
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // error - return to form, Html.ValidationSummary()
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return RedirectToAction(nameof(Edit),transactionForm);
             }
+        }
+
+        private void _UpdateOrDeletedExistingTransactions(List<Transaction> oldTransactions, IEnumerable<Transaction> submittedTransactions)
+        {
+            foreach (var oldTrans in oldTransactions)
+            {
+                // if  exist edit, else delete
+                var newTrans = submittedTransactions.FirstOrDefault(t => t.Id == oldTrans.Id);
+                if (newTrans != null)
+                {
+                    // update
+                    oldTrans.ValuDebit = newTrans.ValuDebit;
+                    oldTrans.ValueCredit = newTrans.ValueCredit;
+                    oldTrans.AccountTreeId = newTrans.AccountTreeId;
+                }
+                else
+                {
+                    // delete
+                    _context.Transactions.Remove(oldTrans);
+                }
+            }
+        }
+
+        private void _AddNewTransactions(IEnumerable<Transaction> submittedTransactions)
+        {
+            foreach (var trans in submittedTransactions.Where(t => t.Id == 0))
+                _context.Transactions.Add(trans);
         }
 
         // GET: TransactionsController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+
+            var transaction2Delete = _context.Transactions.Where(x => x.SerialNumberId == id).ToList();
+            var entryRelated = _context.EntriesSerialize.Find(id);
+
+            if (entryRelated != null && transaction2Delete != null)
+            {
+                foreach (var item in transaction2Delete)
+                {
+                    _context.Remove(item);
+                }
+
+                _context.Remove(entryRelated);
+                _context.SaveChanges();
+
+                ViewBag.EntryDeleted = "تم حذف القيد بنجاح !";
+
+                return RedirectToAction(nameof(Index));
+                
+            };
+
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: TransactionsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //// POST: TransactionsController/Delete/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Delete(int id, IFormCollection collection)
+        //{
+        //    try
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
     }
 }

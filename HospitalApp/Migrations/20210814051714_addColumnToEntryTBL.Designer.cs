@@ -4,14 +4,16 @@ using HospitalApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HospitalApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210814051714_addColumnToEntryTBL")]
+    partial class addColumnToEntryTBL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,9 +70,7 @@ namespace HospitalApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("Date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -95,13 +95,16 @@ namespace HospitalApp.Migrations
                     b.Property<int>("AccountTreeId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime");
+
                     b.Property<int>("SerialNumberId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("ValuDebit")
+                    b.Property<decimal>("ValuDebit")
                         .HasColumnType("decimal(18,0)");
 
-                    b.Property<decimal?>("ValueCredit")
+                    b.Property<decimal>("ValueCredit")
                         .HasColumnType("decimal(18,0)");
 
                     b.HasKey("Id");

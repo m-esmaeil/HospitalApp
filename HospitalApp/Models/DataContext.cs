@@ -48,6 +48,13 @@ namespace HospitalApp.Models
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AccountsTree_Categories");
+
+                /*
+                entity.HasOne(d => d.Parent)
+                       .WithMany(d => d.Children)
+                       .HasForeignKey(d => d.FollowTo)
+                       .OnDelete(DeleteBehavior.ClientSetNull);
+                */
             });
 
             //modelBuilder.Entity<AcountType>(entity =>
@@ -70,14 +77,17 @@ namespace HospitalApp.Models
             {
                 entity.ToTable("EntriesSerialize");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).UseIdentityColumn();
 
-                entity.Property(e => e.Serial).ValueGeneratedOnAdd();
+                entity.Property(e => e.Serial).IsRequired();
+
+                entity.Property(e => e.date).HasDefaultValueSql("GETDATE()");
             });
 
             modelBuilder.Entity<Transaction>(entity =>
             {
-                entity.Property(e => e.Date).HasColumnType("datetime");
+                //entity.Property(e => e.Date).HasColumnType("datetime");
+                //entity.Property(e => e.Date).HasDefaultValueSql("GETDATE()");
 
                 entity.Property(e => e.ValueCredit).HasColumnType("decimal(18, 0)");
                 entity.Property(e => e.ValuDebit).HasColumnType("decimal(18,0)");

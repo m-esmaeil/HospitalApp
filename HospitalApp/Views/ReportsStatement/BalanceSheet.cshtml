@@ -1,0 +1,127 @@
+﻿@model IEnumerable<HospitalApp.ViewModel.AccountsSumVM>
+
+@{
+    ViewData["Title"] = "BalanceSheet";
+}
+
+@{
+    if (ViewBag.startDate != null)
+    {
+    <h5 class="shadow bg-success p-3 jumbotron text-center text-white font-bold" dir="rtl">
+        <span class="d-block mb-2"><i class="fas fa-book-open"></i> ميزان المراجعة </span>
+        في الفترة من <span class="border rounded-lg px-2 mx-2 btn-outline-light">@ViewBag.startDate</span>
+        الي <span class="border rounded-lg px-2 mr-2 btn-outline-light">@ViewBag.endDate</span>
+
+    </h5> }
+    else
+    {
+        <h3 class="jumbotron p-3 text-center bg-success text-white font-bold shadow">ميزان المراجعة  
+                <i class="fas fa-balance-scale"></i>
+        </h3>
+    }
+
+}
+
+<!-- Search Row in the top -->
+<div class="container d-flex flex-row" dir="rtl">
+    <form asp-action="BalanceSheet" method="get" class="form-inline col-md-8 pr-0">
+        <input type="text" name="id" id="AccName" class="form-control form-control-sm col ml-2 mb-2" placeholder="اسم الحساب" />
+        <span class="form-text ml-2 mb-2 mr-5"> مـــــن</span>
+        <input type="date" name="startDate" class="form-control form-control-sm col ml-2 mb-2" />
+        <span class="form-text ml-2 mb-2">إلــي</span>
+        <input type="date" name="endDate" class="form-control form-control-sm col mb-2" />
+        <button type="submit" class="btn btn-sm btn-warning mr-2 mb-2 font-bold text-white col" style="cursor:pointer;">
+            <i class="fas fa-search ml-2"></i> بحث
+        </button>
+    </form>
+    <a class="btn btn-sm btn-outline-secondary mb-2 mr-auto" asp-controller="Home" asp-action="Index">
+        <i class="fas fa-directions"></i>  للصفحة الرئيسية
+    </a>
+</div>
+
+
+<div class="container mt-3">
+    <table class="table table-sm table-hover table-striped text-center" dir="rtl">
+        <thead class="bg-dark text-white">
+            <tr>
+                <th>
+                    مسلسل
+                </th>
+                <th>
+                    اسم الحساب
+                </th>
+                <th>
+                    المدين
+                </th>
+                <th>
+                    الدائن
+                </th>
+                <th>
+                    الرصيد
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        @item.Account
+                    </td>
+                    <td>
+                        @item.SumDebit
+                    </td>
+                    <td>
+                        @item.SumCredit
+                    </td>
+                    <td>
+                        @{var balance = item.SumDebit - item.SumCredit; }
+                        @balance
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="bg-success text-white font-bold table-sm">
+                <th></th>
+                <th>الاجمـــــــالي</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+@section scripts{
+    <script>
+        $(function () {
+            $("#AccName").on("keyup", function () {
+
+                var searchText = $("#AccName").val();
+
+                $("table tr").each(function (results) {
+
+                    if (results !== 0) {
+                        var id = $(this).find("td:nth-child(2)").text();
+                        if (id.indexOf(searchText) !== 0 && id.toLowerCase().indexOf(searchText.toLowerCase()) < 0) {
+                            $(this).hide();
+                        } else {
+                            $(this).show();
+                        }
+                    }
+                });
+                $("table tfoot tr").show();
+            });
+
+            $("table tbody tr.show").each(function (result) {
+                var numRow = 1;
+                $(this).find("td:nth-child(1)").text() = numRow;
+                numRow++
+            });
+        });
+    </script>
+}

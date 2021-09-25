@@ -11,17 +11,29 @@
 <div dir="rtl" class="mx-auto p-3" style="width: 450px; height:250px;">
 
     <div class="text-right d-flex flex-column shadow p-3 mt-2">
+        <!-- Category name-->
         <div class="form-inline mt-3">
-            <label class="control-label ml-auto font-bold">الحساب الرئيسي</label>
-            <input asp-for="Name" disabled value="@Model.Categories.Name" class="form-control w-50" />
+            <label asp-for="CategoryId" class="control-label ml-auto font-bold">الحساب الرئيسي</label>
+            <input value="@Model.Categories.Name" class="form-control w-50" disabled />
         </div>
+        <!-- Follow To Column -->
         <div class="form-inline mt-3">
-            <label class="control-label ml-auto font-bold">تابع لحساب</label>
-            <input asp-for="Name" disabled value="@Model.FollowTo" class="form-control w-50" />
+            <label asp-for="FollowTo" class="control-label ml-auto font-bold">تابع لحساب</label>
+            @if (Model.Parent != null)
+            {
+                <input class="form-control w-50" value="@Model.Parent.Name" disabled />
+            }
+            else
+            {
+                <input value="حساب رئيسي" disabled class="form-control w-50" />
+            }
+
+
         </div>
+        <!-- Name Of Account -->
         <div class="form-inline mt-3">
-            <label class="control-label ml-auto font-bold">اسم الحساب</label>
-            <input asp-for="Name" disabled value="@Model.Name" class="form-control w-50" />
+            <label asp-for="Name" class="control-label ml-auto font-bold">اسم الحساب</label>
+            <input asp-for="Name" disabled class="form-control w-50" />
         </div>
 
         <div class="form-inline mt-5 d-flex justify-content-around">
