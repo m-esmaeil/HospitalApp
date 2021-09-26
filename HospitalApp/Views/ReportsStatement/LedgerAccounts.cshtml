@@ -30,7 +30,7 @@
 </div>
 
 <div class="container mt-3">
-    <table class="table table-sm table-hover table-striped text-center" dir="rtl">
+    <table class="table table-sm table-hover table-striped text-center table-responsive" dir="rtl">
         <thead class="bg-success text-white font-bold">
             <tr>
                 <th>التاريـــخ</th>
@@ -45,9 +45,10 @@
         <tbody>
             @foreach (var item in Model.GroupBy(x => x.AccountsTree.Name))
             {
-                <tr class="text-white" style="background-color: #C5C5C5;">
+                <tr class="" style="background-color: #C5C5C5;">
                     <td></td>
-                    <td colspan="3" class="text-right font-bold">@item.Key</td>
+                    <td colspan="2" class="text-center font-weight-bolder"><u> @item.Key</u></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -56,10 +57,10 @@
                 @foreach (var itemDTL in item.ToList())
                 {
                     <tr>
-                        <td style="width:20%;">
-                            @itemDTL.entriesSerialize.date
+                        <td style="width:20%;" class="text-secondary">
+                            @itemDTL.entriesSerialize.date.ToShortDateString()
                         </td>
-                        <td style="width:40%;">
+                        <td style="width:40%;" class="text-secondary">
                             @itemDTL.entriesSerialize.Description
                         </td>
                         <td>

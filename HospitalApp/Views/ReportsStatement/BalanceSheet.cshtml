@@ -7,12 +7,12 @@
 @{
     if (ViewBag.startDate != null)
     {
-    <h5 class="shadow bg-success p-3 jumbotron text-center text-white font-bold" dir="rtl">
-        <span class="d-block mb-2"><i class="fas fa-book-open"></i> ميزان المراجعة </span>
+    <div class="shadow bg-success p-3 jumbotron text-center text-white font-bold" dir="rtl">
+        <h3 class="d-block mb-3 font-bold"><i class="fas fa-book-open"></i> ميزان المراجعة </h3>
         في الفترة من <span class="border rounded-lg px-2 mx-2 btn-outline-light">@ViewBag.startDate</span>
         الي <span class="border rounded-lg px-2 mr-2 btn-outline-light">@ViewBag.endDate</span>
 
-    </h5> }
+    </div> }
     else
     {
         <h3 class="jumbotron p-3 text-center bg-success text-white font-bold shadow">ميزان المراجعة  
@@ -114,14 +114,39 @@
                         }
                     }
                 });
+                reOrderRowsTBL();
+                getSumColumn();
                 $("table tfoot tr").show();
+
             });
 
-            $("table tbody tr.show").each(function (result) {
+            // ReOrder rows number in table
+            function reOrderRowsTBL() {
+
                 var numRow = 1;
-                $(this).find("td:nth-child(1)").text() = numRow;
-                numRow++
-            });
+                $("table tbody tr:visible").each(function (result) {
+
+                    $(this).find("td:nth-child(1)").text(numRow);
+                    numRow++
+                });
+            }
+            reOrderRowsTBL();
+
+            // Function To Sum all of Debit and Credit items
+            function getSumColumn() {
+
+                var sumDebit =0 , sumCredit = 0;
+
+                $("table tbody tr:visible").each(function (result) {
+
+                    sumDebit += parseFloat($(this).find("td:nth-child(3)").text());
+                    sumCredit += parseFloat($(this).find("td:nth-child(4)").text());
+                });
+
+                $("table tfoot tr").find("th:nth-child(3)").text(sumDebit);
+                $("table tfoot tr").find("th:nth-child(4)").text(sumCredit);
+            }
+            getSumColumn();
         });
     </script>
 }

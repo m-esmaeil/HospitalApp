@@ -20,32 +20,53 @@ namespace HospitalApp.Controllers
 
 
         // GET: incomeStatementController
-        public ActionResult BalanceSheet(DateTime startDate, DateTime endDate)
+        public ActionResult BalanceSheet(DateTime? startDate, DateTime? endDate)
         {
             var AccountsName = _context.AccountsTree.ToList();
             var TransactionsList = _context.Transactions
                                            .Include(x => x.AccountsTree)
-                                           .Where(x => x.entriesSerialize.date >= startDate && x.entriesSerialize.date <= endDate)
                                            .ToList();
+
+
 
             List<AccountsSumVM> accountsSumVM = new List<AccountsSumVM>();
 
-            foreach (var item in AccountsName)
+            if (startDate != null && endDate != null)
             {
-                accountsSumVM.Add(new AccountsSumVM
+                foreach (var item in AccountsName)
                 {
-                    Account = item.Name,
-                    SumCredit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValueCredit != null).Sum(x => x.ValueCredit),
-                    SumDebit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValuDebit != null).Sum(x => x.ValuDebit)
-                });
+                    accountsSumVM.Add(new AccountsSumVM
+                    {
+                        Account = item.Name,
+                        SumCredit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValueCredit != null).Sum(x => x.ValueCredit),
+                        SumDebit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValuDebit != null).Sum(x => x.ValuDebit)
+                    });
+                }
+
+                ViewBag.startDate = startDate;
+                ViewBag.endDate = endDate;
+
+            }
+            else
+            {
+                foreach (var item in AccountsName)
+                {
+                    accountsSumVM.Add(new AccountsSumVM
+                    {
+                        Account = item.Name,
+                        SumCredit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValueCredit != null).Sum(x => x.ValueCredit),
+                        SumDebit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValuDebit != null).Sum(x => x.ValuDebit)
+                    });
+                }
+
+                ViewBag.startDate = null;
+                ViewBag.endDate = null;
             }
 
-            ViewBag.startDate = startDate.ToString("yyyy MMMM dd");
-            ViewBag.endDate = endDate.ToString("MMMM dd yyyy");
+            
 
             return View(accountsSumVM.Where(x => x.SumDebit - x.SumCredit != 0));
         }
-
 
         // GET: incomeStatementController/Details/5
         public ActionResult Details(int id)
