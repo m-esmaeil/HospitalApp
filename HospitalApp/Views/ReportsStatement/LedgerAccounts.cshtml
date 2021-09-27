@@ -74,7 +74,7 @@
                             @(balance += x)
                         </td>
                         <td>
-                            <a asp-action="Details" class="btn btn-sm btn-outline-success">
+                            <a class="btn btn-sm btn-outline-success" asp-action="DetailsJournalLedger" asp-route-id="@itemDTL.SerialNumberId">
                                 Details <i class="fas fa-info"></i>
                             </a>
                         </td>
@@ -84,3 +84,11 @@
         </tbody>
     </table>
 </div>
+
+
+@section scripts
+{
+<script>
+
+</script>
+}

@@ -69,9 +69,10 @@ namespace HospitalApp.Controllers
         }
 
         // GET: incomeStatementController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult DetailsJournalLedger(int id)
         {
-            return View();
+            var JournalEntry = _context.Transactions.Where(x => x.SerialNumberId == id).ToList();
+            return View(JournalEntry);
         }
 
         // GET: incomeStatementController/Create
