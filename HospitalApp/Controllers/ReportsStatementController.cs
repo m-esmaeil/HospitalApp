@@ -7,66 +7,50 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HospitalApp.HelperClasses;
 
 namespace HospitalApp.Controllers
 {
     public class ReportsStatementController : Controller
     {
         private readonly DataContext _context;
-        public ReportsStatementController (DataContext context)
+        public ReportsStatementController(DataContext context)
         {
             _context = context;
         }
 
 
-        // GET: incomeStatementController
+        // GET: all accounts in transactions
         public ActionResult BalanceSheet(DateTime? startDate, DateTime? endDate)
         {
             var AccountsName = _context.AccountsTree.ToList();
             var TransactionsList = _context.Transactions
-                                           .Include(x => x.AccountsTree)
-                                           .ToList();
+                                          .Include(x => x.AccountsTree)
+                                          .Where(x => x.entriesSerialize.date >= startDate.getFirstDayInCurrentYear() &&
+                                                      x.entriesSerialize.date <= endDate.getLastDayInCurrentYear().getEndTimeOFDay())
+                                          .ToList();
 
 
 
             List<AccountsSumVM> accountsSumVM = new List<AccountsSumVM>();
 
-            if (startDate != null && endDate != null)
+            foreach (var item in AccountsName)
             {
-                foreach (var item in AccountsName)
+                accountsSumVM.Add(new AccountsSumVM
                 {
-                    accountsSumVM.Add(new AccountsSumVM
-                    {
-                        Account = item.Name,
-                        SumCredit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValueCredit != null).Sum(x => x.ValueCredit),
-                        SumDebit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValuDebit != null).Sum(x => x.ValuDebit)
-                    });
-                }
-
-                ViewBag.startDate = startDate;
-                ViewBag.endDate = endDate;
-
-            }
-            else
-            {
-                foreach (var item in AccountsName)
-                {
-                    accountsSumVM.Add(new AccountsSumVM
-                    {
-                        Account = item.Name,
-                        SumCredit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValueCredit != null).Sum(x => x.ValueCredit),
-                        SumDebit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValuDebit != null).Sum(x => x.ValuDebit)
-                    });
-                }
-
-                ViewBag.startDate = null;
-                ViewBag.endDate = null;
+                    Account = item.Name,
+                    SumCredit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValueCredit != null).Sum(x => x.ValueCredit),
+                    SumDebit = TransactionsList.Where(x => x.AccountTreeId == item.Id && x.ValuDebit != null).Sum(x => x.ValuDebit)
+                });
             }
 
-            
 
-            return View(accountsSumVM.Where(x => x.SumDebit - x.SumCredit != 0));
+            ViewBag.startDate = startDate.getFirstDayInCurrentYear().ToShortDateString();
+            ViewBag.endDate = endDate.getLastDayInCurrentYear().ToShortDateString();
+
+            return View(accountsSumVM.Where(x => x.SumDebit > 0 || x.SumCredit > 0));
         }
+
 
         // GET: incomeStatementController/Details/5
         public ActionResult DetailsJournalLedger(int id)
@@ -76,12 +60,18 @@ namespace HospitalApp.Controllers
         }
 
         // GET: incomeStatementController/Create
-        public ActionResult LedgerAccounts()
+        public ActionResult LedgerAccounts(DateTime? startDate, DateTime? endDate)
         {
             var accounts = _context.Transactions
-                                    .Include(x => x.AccountsTree)
-                                    .Include(x => x.entriesSerialize)
-                                    .ToList();
+                                   .Include(x => x.entriesSerialize)
+                                   .Where(x => x.entriesSerialize.date >= startDate.getFirstDayInCurrentYear() && 
+                                               x.entriesSerialize.date <= endDate.getLastDayInCurrentYear().getEndTimeOFDay())
+                                   .Include(x => x.AccountsTree)
+                                   .ToList();
+
+            ViewBag.startDate = startDate.getFirstDayInCurrentYear().ToShortDateString();
+            ViewBag.endDate = endDate.getLastDayInCurrentYear().ToShortDateString();
+
             return View(accounts);
         }
 

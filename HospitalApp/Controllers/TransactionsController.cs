@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HospitalApp.HelperClasses;
 
 namespace HospitalApp.Controllers
 {
@@ -19,16 +20,21 @@ namespace HospitalApp.Controllers
             _context = context;
         }
         // GET: TransactionsController
-        public ActionResult Index()
+        public ActionResult Index(DateTime? startDate, DateTime? endDate)
         {
             var Trans2Display = _context.Transactions
+                                        .Where(x => x.entriesSerialize.date >= startDate.getFirstDayInCurrentYear() && 
+                                                    x.entriesSerialize.date <= endDate.getLastDayInCurrentYear().getEndTimeOFDay())
                                         .Include(x => x.AccountsTree)
                                         .Include(x => x.entriesSerialize)
                                         .Include(x => x.AccountsTree.Categories)
-                                        .OrderBy(x => x.entriesSerialize.Serial)
+                                        .OrderBy(x => x.entriesSerialize.Id)
                                         .ThenBy(x => x.Id)
                                         .ToList();
-                
+
+            ViewBag.startDate = startDate.getFirstDayInCurrentYear().ToShortDateString();
+            ViewBag.endDate = endDate.getLastDayInCurrentYear().ToShortDateString();
+
             return View(Trans2Display);
         }
 
@@ -46,7 +52,7 @@ namespace HospitalApp.Controllers
             {
                 AccountsTreeList = _context.AccountsTree.ToList(),
                 DateVM = DateTime.Now,
-                SerialNumberIdVM = _context.EntriesSerialize.Count() + 1
+                SerialNumberIdVM = _context.EntriesSerialize.Max(x => x.Id) + 1 
             };
 
 
@@ -127,7 +133,7 @@ namespace HospitalApp.Controllers
         public ActionResult Edit(int id)
         {
            var Trans2Edite = _context.Transactions
-                                     .Where(x => x.entriesSerialize.Id == id)
+                                     .Where(x => x.SerialNumberId == id)
                                      .Include(x => x.entriesSerialize)
                                      .Include(x => x.AccountsTree)
                                      .ToList();
@@ -159,7 +165,7 @@ namespace HospitalApp.Controllers
                 if (ModelState.IsValid)
                 {
                     List<Transaction> oldTransactions = _context.Transactions
-                                                            .Where(x => x.entriesSerialize.Id == serialNumberId)
+                                                            .Where(x => x.SerialNumberId == serialNumberId)
                                                             .Include(x => x.entriesSerialize)
                                                             .Include(x => x.AccountsTree)
                                                             .ToList();
@@ -172,8 +178,12 @@ namespace HospitalApp.Controllers
                     // remove deleted transactions
                     _UpdateOrDeletedExistingTransactions(oldTransactions, submittedTransactions);
 
+                    // update description
+                    var oldJournalEntry = _context.EntriesSerialize.Find(serialNumberId);
+                    oldJournalEntry.Description = transactionForm.Description;
+                    oldJournalEntry.date = transactionForm.DateVm;
+                    
                     _context.SaveChanges();
-
 
                     return RedirectToAction(nameof(Index));
                 }

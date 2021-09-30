@@ -4,98 +4,112 @@
     ViewData["Title"] = "Index";
 }
 
-<h3 class="jumbotron p-3 text-center bg-success text-white font-bold"> قيود اليومية <i class="fas fa-layer-group"></i></h3>
 
-<p>
-    <a asp-action="Create" class="btn btn-sm btn-outline-primary">اضافة قيد جديد <i class="fas fa-plus-circle"></i></a>
-</p>
-@if (ViewBag.MSGDel != null)
-{
-    <h4 class="jumbotron p-1 bg-danger">@ViewBag.MSGDel</h4>
-}
-@if (ViewBag.TransNotSaveMSG != null)
-{
-    <h4 class="jumbotron p-1 bg-warning">@ViewBag.TransNotSaveMSG</h4>
-}
-@if (ViewBag.TransSaveMSG != null)
-{
-    <h4 class="jumbotron p-1 bg-success">@ViewBag.TransSaveMSG</h4>
-}
-<table class="table table-sm table-striped table-hover text-center" dir="rtl">
-    <thead class="bg-success text-white">
-        <tr>
-            <th>
-                رقم القيد
-            </th>
-            <th>
-                تاريخ انشاء القيد
-            </th>
-            <th>
-                @*الحساب الرئيسي*@
-            </th>
-            <th>
-                اسم الحساب
-            </th>
-            <th>
-                مدين
-            </th>
-            <th>
-                دائن
-            </th>
-            <th>
-                الاجراءات
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.GroupBy(x => x.entriesSerialize))
-        {
-            <tr class="text-secondary table-sm font-bold" style="background-color: #C5C5C5;">
-                <td>
-                    @item.Key.Serial
-                </td>
-                <td>
-                    @item.Key.date.ToShortDateString()
-                </td>
-                <td colspan="4">
-                    @item.Key.Description
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Key.Id" class="btn btn-sm btn-outline-info" > Edit <i class="fas fa-pencil-alt"></i></a>
-                    @*<a asp-action="Details" asp-route-id="@item.Key.Serial" class="btn btn-sm btn-outline-success">Details <i class="fas fa-info"></i></a>*@
-                    <a asp-action="Delete" asp-route-id="@item.Key.Id" onclick="return confirm('هل انت متاكد من حذف القيد ؟');" 
-                       class="btn btn-sm btn-outline-danger"> Delete 
-                        <i class="fas fa-trash"></i>
-                    </a>
-                </td>
+<div class="shadow bg-success p-3 jumbotron text-center text-white font-bold" dir="rtl">
+    <h3 class="d-block mb-3 font-bold"><i class="fas fa-layer-group"></i> قيود اليومية </h3>
+    في الفترة من <span class="border rounded-lg px-2 mx-2 btn-outline-light">@ViewBag.startDate</span>
+    الي <span class="border rounded-lg px-2 mr-2 btn-outline-light">@ViewBag.endDate</span>
+</div>
+
+<!-- form to filter data by date-->
+<div class="container d-flex flex-row mb-2" dir="rtl">
+    <form asp-action="Index" method="get" class="form-inline col-md-6 pr-0">
+        <span class="form-text ml-2 mb-2"> مـــــن</span>
+        <input type="date" name="startDate" class="form-control form-control-sm ml-2 mb-2" />
+        <span class="form-text ml-2 mb-2">إلــي</span>
+        <input type="date" name="endDate" class="form-control form-control-sm mb-2" />
+        <button type="submit" class="btn btn-sm btn-warning mr-2 mb-2 font-bold text-white" style="cursor:pointer;">
+            <i class="fas fa-search"></i> بحث
+        </button>
+    </form>
+    <a class="btn btn-sm btn-outline-secondary mb-2 mr-auto" asp-controller="Home" asp-action="Index">
+        <i class="fas fa-directions"></i>  للصفحة الرئيسية
+    </a>
+    <a asp-action="Create" class="btn btn-sm btn-outline-primary mb-2 mr-3">
+        <i class="fas fa-plus-circle"></i> اضافة قيد جديد
+    </a>
+</div>
+
+
+<div class="container">
+    <table class="table table-sm table-striped table-hover text-center" dir="rtl">
+        <thead class="bg-success text-white">
+            <tr>
+                <th>
+                    رقم القيد
+                </th>
+                <th>
+                    تاريخ انشاء القيد
+                </th>
+                <th>
+                    @*الحساب الرئيسي*@
+                </th>
+                <th>
+                    اسم الحساب
+                </th>
+                <th>
+                    مدين
+                </th>
+                <th>
+                    دائن
+                </th>
+                <th>
+                    الاجراءات
+                </th>
             </tr>
-            @foreach (var trans in item.ToList())
+        </thead>
+        <tbody class="border-bottom">
+            @foreach (var item in Model.GroupBy(x => x.entriesSerialize))
             {
-
-                <tr class="table-sm">
+                <tr class="text-secondary table-sm font-bold" style="background-color: #C5C5C5;">
                     <td>
+                        @item.Key.Id
                     </td>
                     <td>
-                        @*<i class="fas fa-chevron-left text-secondary" style="color:gray;"></i>=======*@
-                        <i class="fas fa-chevron-left text-secondary" style="color:gray;"></i>
-                        <i class="fas fa-chevron-left text-secondary" style="color:gray;"></i>
+                        @item.Key.date.ToShortDateString()
                     </td>
-                    <td class="font-bold">
-                        @*@trans.AccountsTree.Categories.Name*@
+                    <td colspan="4">
+                        @item.Key.Description
                     </td>
                     <td>
-                        @trans.AccountsTree.Name
-                    </td>
-                    <td>
-                        @trans.ValuDebit
-                    </td>
-                    <td>
-                        @trans.ValueCredit
-                    </td>
-                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Key.Id" class="btn btn-sm btn-outline-info"> Edit <i class="fas fa-pencil-alt"></i></a>
+                        @*<a asp-action="Details" asp-route-id="@item.Key.Serial" class="btn btn-sm btn-outline-success">Details <i class="fas fa-info"></i></a>*@
+                        <a asp-action="Delete" asp-route-id="@item.Key.Id" onclick="return confirm('هل انت متاكد من حذف القيد ؟');"
+                           class="btn btn-sm btn-outline-danger">
+                            Delete
+                            <i class="fas fa-trash"></i>
+                        </a>
                     </td>
                 </tr>
+                @foreach (var trans in item.ToList())
+                {
+
+                    <tr class="table-sm">
+                        <td>
+                        </td>
+                        <td>
+                            @*<i class="fas fa-chevron-left text-secondary" style="color:gray;"></i>=======*@
+                            <i class="fas fa-chevron-left text-secondary" style="color:gray;"></i>
+                            <i class="fas fa-chevron-left text-secondary" style="color:gray;"></i>
+                        </td>
+                        <td class="font-bold">
+                            @*@trans.AccountsTree.Categories.Name*@
+                        </td>
+                        <td>
+                            @trans.AccountsTree.Name
+                        </td>
+                        <td>
+                            @trans.ValuDebit
+                        </td>
+                        <td>
+                            @trans.ValueCredit
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+
+</div>

@@ -27,12 +27,12 @@
                         <span asp-validation-for="@item.Key.Serial" class="text-danger"></span>
                     </div>
                     <div class="form-inline mt-3 col-md-6">
-                        <input class="form-control col-12" type="datetime-local" asp-for="@item.Key.date" />
+                        <input class="form-control col-12" type="datetime-local" asp-for="@item.Key.date" name="dateVM" />
                         <span asp-validation-for="@item.Key.date" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group mt-3">
-                    <input type="text" value="@item.Key.Description" class="form-control d-inline-block" />
+                    <input type="text" value="@item.Key.Description" class="form-control d-inline-block" asp-for="@item.Key.Description" name="Description" />
                     <span class="text-danger" asp-validation-for="@item.Key.Description"></span>
                 </div>
 

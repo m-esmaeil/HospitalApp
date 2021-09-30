@@ -49,8 +49,8 @@
             <!-- row to add items of entry journal ??? -->
             <div class="form-row rowCount" id="test" name="row-n[i]">
                 <div class="form-inline mt-2 col-5">
-                    <input type="text" name="myAccounts" id="myAccounts" list="dataOptions" placeholder="اسم الحساب" class="form-control shadow border-secondary col-12 items-name" />
-                    <datalist id="dataOptions" asp-for="AccountTreeIdVM" name="account[]">
+                    <input type="text" name="account[]" asp-for="AccountTreeIdVM" id="" list="dataOptions" placeholder="اسم الحساب" class="form-control shadow border-secondary col-12 items-name" />
+                    <datalist id="dataOptions">
                         
                         @foreach (var item in Model.AccountsTreeList)
                         {
@@ -99,7 +99,7 @@
 <div id="templateRow" style="display:none;">
     <div class="form-row rowCount" id="template" name="row-n[i]">
         <div class="form-inline mt-2 col-md-5">
-            <input type="text" name="myAccounts" id="myAccounts" list="dataOptions" placeholder="اسم الحساب" class="form-control shadow border-secondary col-12 items-name" />
+            <input type="text" name="account[]" id="" list="dataOptions" placeholder="اسم الحساب" class="form-control shadow border-secondary col-12 items-name" />
             @*<datalist asp-for="AccountTreeIdVM" class="form-control shadow border-secondary col-12 items-name" name="account[]">
                 
                 @foreach (var item in Model.AccountsTreeList)
@@ -136,7 +136,7 @@
     function reArrangeRows() {
 
         let itemRows = document.querySelectorAll(".rowCount");
-        let selectItems = document.getElementsByTagName("select");
+        let selectItems = document.querySelectorAll(".item-name");
 
         for (var i = 0; i <= itemRows.length - 1; i++) {
 

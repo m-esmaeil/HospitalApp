@@ -1,32 +1,26 @@
 ﻿@model IEnumerable<HospitalApp.Models.Transaction>
 
-@{
-    if (ViewBag.startDate != null)
-    {
-        <h5 class="shadow bg-success p-3 jumbotron text-center text-white font-bold">
-            <span class="d-block mb-2">الاســـــــتاذ المســـــاعد</span><i class="fas fa-book-open"></i>
-            في الفترة من <span class="border rounded-lg px-2 mx-2 btn-outline-light">@ViewBag.startDate</span> الي  <span class="border rounded-lg px-2 mr-2 btn-outline-light">@ViewBag.endDate</span>
-        </h5> }
-    else
-    {
-        <h3 class="shadow bg-success p-3 jumbotron text-center text-white font-bold">الاســـــــتاذ المســـــاعد <i class="fas fa-book-open"></i></h3>
-    }
 
-}
+<div class="shadow bg-success p-3 jumbotron text-center text-white font-bold" dir="rtl">
+    <h3 class="d-block mb-3 font-bold"><i class="fas fa-book-open"></i> الاستاذ المساعد</h3>
+    في الفترة من <span class="border rounded-lg px-2 mx-2 btn-outline-light">@ViewBag.startDate</span>
+    الي <span class="border rounded-lg px-2 mr-2 btn-outline-light">@ViewBag.endDate</span>
+
+</div>
 
 <!-- Search Row in the top -->
-<div class="container d-flex flex-row" dir="rtl">
+<div class="container d-flex flex-row mb-2" dir="rtl">
     <form asp-action="LedgerAccounts" class="form-inline col-md-8 pr-0">
-        <input type="text" name="id" id="AccName" class="form-control form-control-sm col ml-2 mb-2" placeholder="اسم الحساب" />
-        <span class="form-text ml-2 mb-2 mr-5"> مـــــن</span>
-        <input type="date" name="startDate" value="@ViewBag.startDate" class="form-control form-control-sm col ml-2 mb-2" />
-        <span class="form-text ml-2 mb-2">إلــي</span>
-        <input type="date" name="endDate" value="@ViewBag.endDate" class="form-control form-control-sm col mb-2" />
-        <button type="submit" class="btn btn-sm btn-warning mr-2 mb-2 font-bold text-white col" style="cursor:pointer;">
-            <i class="fas fa-search ml-2"></i> بحث
+        <input type="text" name="id" id="AccName" class="form-control form-control-sm ml-2" placeholder="اسم الحساب" />
+        <span class="form-text ml-2 mr-2"> مـــــن</span>
+        <input type="date" name="startDate" value="@ViewBag.startDate" class="form-control form-control-sm ml-2" />
+        <span class="form-text ml-2">إلــي</span>
+        <input type="date" name="endDate" value="@ViewBag.endDate" class="form-control form-control-sm" />
+        <button type="submit" class="btn btn-sm btn-warning mr-2 font-bold text-white" style="cursor:pointer;">
+            <i class="fas fa-search"></i> بحث
         </button>
     </form>
-    <a class="btn btn-sm btn-outline-secondary mb-2 mr-auto" asp-controller="Home" asp-action="Index"><i class="fas fa-directions"></i>  للصفحة الرئيسية</a>
+    <a class="btn btn-sm btn-outline-secondary mr-auto" asp-controller="Home" asp-action="Index"><i class="fas fa-directions"></i>  للصفحة الرئيسية</a>
 </div>
 
 <div class="container mt-3">
@@ -69,7 +63,7 @@
                         <td>
                             @itemDTL.ValueCredit
                         </td>
-                         @{decimal x = ((itemDTL.ValuDebit ?? 0) - (itemDTL.ValueCredit ?? 0));}
+                        @{decimal x = ((itemDTL.ValuDebit ?? 0) - (itemDTL.ValueCredit ?? 0));}
                         <td>
                             @(balance += x)
                         </td>
@@ -88,7 +82,7 @@
 
 @section scripts
 {
-<script>
+    <script>
 
-</script>
+    </script>
 }
