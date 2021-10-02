@@ -42,7 +42,7 @@
                     <div class="form-row rowCount" id="" name="row-n[i]">
                         <div class="form-inline mt-2 col-5">
                             <input type="hidden" name="TransIds[]" value="@Trans.Id" />
-                            <select asp-for="@Trans.AccountTreeId" class="form-control shadow border-secondary col-12 items-name" name="account[]">
+                            <select asp-for="@Trans.AccountTreeId" class="form-control shadow border-secondary col-12 items-name" name="account[]" accesskey="true">
                                 @*<option value="@Trans.AccountTreeId">@Trans.AccountsTree.Name</option>*@
                                 @foreach (var items in ViewBag.AccountsTreeList)
                                 {

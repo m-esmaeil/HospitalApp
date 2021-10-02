@@ -55,6 +55,7 @@ namespace HospitalApp.Controllers
                 SerialNumberIdVM = _context.EntriesSerialize.Max(x => x.Id) + 1 
             };
 
+            ViewBag.EntriesNum = _context.EntriesSerialize.Max(x => x.Id) + 1;
 
             return View(Trans2Create);
         }

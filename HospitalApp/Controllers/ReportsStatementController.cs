@@ -55,12 +55,19 @@ namespace HospitalApp.Controllers
         // GET: incomeStatementController/Details/5
         public ActionResult DetailsJournalLedger(int id)
         {
-            var JournalEntry = _context.Transactions.Where(x => x.SerialNumberId == id).ToList();
+            var JournalEntry = _context.Transactions
+                                       .Where(x => x.SerialNumberId == id)
+                                       .Include(x => x.entriesSerialize)
+                                       .ToList();
+
+            ViewBag.serialOfEntryJournal = id;
+            ViewBag.AccountsTreeList = _context.AccountsTree.ToList();
+
             return View(JournalEntry);
         }
 
         // GET: incomeStatementController/Create
-        public ActionResult LedgerAccounts(DateTime? startDate, DateTime? endDate)
+        public ActionResult LedgerAccounts(DateTime? startDate, DateTime? endDate, int id)
         {
             var accounts = _context.Transactions
                                    .Include(x => x.entriesSerialize)
@@ -71,6 +78,13 @@ namespace HospitalApp.Controllers
 
             ViewBag.startDate = startDate.getFirstDayInCurrentYear().ToShortDateString();
             ViewBag.endDate = endDate.getLastDayInCurrentYear().ToShortDateString();
+
+            ViewBag.AccountsData = _context.AccountsTree.ToList();
+
+            if (id > 0)
+            {
+                return View(accounts.Where(c => c.AccountTreeId == id));
+            }
 
             return View(accounts);
         }
