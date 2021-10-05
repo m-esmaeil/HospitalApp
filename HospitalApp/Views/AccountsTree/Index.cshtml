@@ -3,7 +3,9 @@
 @{
     ViewData["Title"] = "Index";
 }
-<h3 class="jumbotron p-3 text-center">شجرة الحسابات</h3>
+<h3 class="jumbotron p-3 text-center font-bold text-white" style="background-color: #1E6AE1;">شجرة الحسابات  <i class="fas fa-tree"></i>
+    <span class="d-block mt-2">@ViewBag.CompanyName</span>
+</h3>
 
 <p>
     <a asp-action="Create" class="btn btn-sm btn-outline-primary">انشاء حساب جديد</a>

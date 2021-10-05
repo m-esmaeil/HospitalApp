@@ -25,8 +25,9 @@ namespace HospitalApp.Controllers
                                     .Include(z => z.Categories)
                                     .Include(z => z.Parent)
                                     .ToList();
+            ViewBag.CompanyName = "لشركة مستشفي الخير الدولي ";
 
-            
+
 
             return View(accounts);
         }

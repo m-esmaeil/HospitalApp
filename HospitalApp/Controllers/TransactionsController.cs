@@ -69,7 +69,7 @@ namespace HospitalApp.Controllers
             {
                 AccountsTreeList = _context.AccountsTree.ToList(),
                 DateVM = DateTime.Now,
-                SerialNumberIdVM = _context.EntriesSerialize.Count() + 1
+                SerialNumberIdVM = _context.EntriesSerialize.Max(m => m.Id) + 1
             };
 
             try

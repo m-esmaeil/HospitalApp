@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,8 +22,11 @@ namespace HospitalApp.ViewModel
 
     public class TransactionForm
     {
+        [Required(ErrorMessage ="من فضلك اخل التاريخ")]
         public DateTime DateVm { get; set; }
+        [Required(ErrorMessage ="ادخل وصف القيد")]
         public string Description { get; set; }
+        [Required(ErrorMessage ="مطلوب اختيار اسم الحساب")]
         public int[] account { get; set; }
         public decimal?[] debit { get; set; }
         public decimal?[] credit { get; set; }

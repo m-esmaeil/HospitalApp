@@ -5,7 +5,7 @@
 }
 
 
-<div class="shadow bg-success p-3 jumbotron text-center text-white font-bold" dir="rtl">
+<div class="shadow p-3 jumbotron text-center bg-primary text-white font-bold" dir="rtl">
     <h3 class="d-block mb-3 font-bold"><i class="fas fa-layer-group"></i> قيود اليومية </h3>
     في الفترة من <span class="border rounded-lg px-2 mx-2 btn-outline-light">@ViewBag.startDate</span>
     الي <span class="border rounded-lg px-2 mr-2 btn-outline-light">@ViewBag.endDate</span>
@@ -18,7 +18,7 @@
         <input type="date" name="startDate" class="form-control form-control-sm ml-2 mb-2" />
         <span class="form-text ml-2 mb-2">إلــي</span>
         <input type="date" name="endDate" class="form-control form-control-sm mb-2" />
-        <button type="submit" class="btn btn-sm btn-warning mr-2 mb-2 font-bold text-white" style="cursor:pointer;">
+        <button type="submit" class="btn btn-sm mr-2 mb-2 font-bold btn-outline-warning" style="cursor: pointer;">
             <i class="fas fa-search"></i> بحث
         </button>
     </form>
@@ -33,7 +33,7 @@
 
 <div class="container">
     <table class="table table-sm table-striped table-hover text-center" dir="rtl">
-        <thead class="bg-success text-white">
+        <thead class="text-white bg-dark">
             <tr>
                 <th>
                     رقم القيد

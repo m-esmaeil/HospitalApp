@@ -1,10 +1,10 @@
-﻿    @model HospitalApp.ViewModel.TransactionsVM
+﻿@model HospitalApp.ViewModel.TransactionsVM
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h3 class="jumbotron p-3 text-right font-bold" style="color:darkgray;">
+<h3 class="jumbotron p-4 text-right font-bold text-white text-center" style="background-color: #1E6AE1;">
     انشاء قيد جديد
     <i class="fas fa-edit"></i>
 </h3>
@@ -49,14 +49,13 @@
             <!-- row to add items of entry journal ??? -->
             <div class="form-row rowCount" id="test" name="row-n[i]">
                 <div class="form-inline mt-2 col-5">
-                    <input type="text" name="account[]" asp-for="AccountTreeIdVM" id="" list="dataOptions" placeholder="اسم الحساب" class="form-control shadow border-secondary col-12 items-name" />
-                    <datalist id="dataOptions">
-                        
+                    <select id="dataOptions" name="account[]" asp-for="AccountTreeIdVM" class="js-example-basic-single form-control shadow border-secondary col-12 items-name">
+
                         @foreach (var item in Model.AccountsTreeList)
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
-                    </datalist>
+                    </select>
                     <span asp-validation-for="AccountTreeIdVM" class="text-danger"></span>
                 </div>
                 <div class="form-inline mt-2 col-3">
@@ -99,15 +98,14 @@
 <div id="templateRow" style="display:none;">
     <div class="form-row rowCount" id="template" name="row-n[i]">
         <div class="form-inline mt-2 col-md-5">
-            <input type="text" name="account[]" id="" list="dataOptions" placeholder="اسم الحساب" class="form-control shadow border-secondary col-12 items-name" />
-            @*<datalist asp-for="AccountTreeIdVM" class="form-control shadow border-secondary col-12 items-name" name="account[]">
-                
+            <select asp-for="AccountTreeIdVM" class="form-control shadow border-secondary col-12 items-name js-example-basic-single" name="account[]">
+
                 @foreach (var item in Model.AccountsTreeList)
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
-            </datalist>
-            <span asp-validation-for="AccountTreeIdVM" class="text-danger"></span>*@
+            </select>
+            <span asp-validation-for="AccountTreeIdVM" class="text-danger"></span>
         </div>
         <div class="form-inline mt-2 col-3">
             <input type="text" value="" onchange="getBalance()" class="form-control shadow border-secondary col-12 debit" placeholder="مدين" name="debit[]" />
@@ -128,11 +126,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script>
+        // functin to use Select2 libirary
+        $(document).on('focus', 'select', function () {
+            $(this).select2({
+                placeholder: 'اسم الحساب'
+            });
+        });
 
+        
 
-<script>
-
-    // function re-arrange row's Id 
+    // function re-arrange row's Id
     function reArrangeRows() {
 
         let itemRows = document.querySelectorAll(".rowCount");
@@ -160,7 +165,7 @@
         });
 
         $(document).on("click", ".del-row", function () {
-            
+
             $(this).parent().parent().remove();
 
             reArrangeRows();
@@ -230,7 +235,7 @@
     // for use in the future but not use in this app
     // function to make array of object from list input (name, credit, debit)
 
- 
+
     @*function sendByAjax() {
         var info = {
             account: $("form select[name='account[]']").map(function () { return this.value }).get(),
@@ -248,9 +253,9 @@
             }
         })
     }*@
-    
 
-    
+
+
     @*function listOfObj() {
 
         let itemNameList = document.getElementsByName("item-name");
@@ -281,7 +286,9 @@
             }
         })
     }*@
-    
-</script>
+
+
+
+    </script>
 
 }
