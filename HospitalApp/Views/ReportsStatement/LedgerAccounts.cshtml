@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<HospitalApp.Models.Transaction>
 
 
-<div class="shadow bg-primary p-3 jumbotron text-center text-white font-bold" dir="rtl">
+<div class="shadow p-3 jumbotron text-center text-white font-bold" dir="rtl" style="background-color: #4189c7;">
     <h3 class="d-block mb-3 font-bold"><i class="fas fa-book-open"></i> الاستاذ المساعد</h3>
     في الفترة من <span class="border rounded-lg px-2 mx-2 btn-outline-light">@ViewBag.startDate</span>
     الي <span class="border rounded-lg px-2 mr-2 btn-outline-light">@ViewBag.endDate</span>
@@ -22,7 +22,7 @@
         <input type="date" name="startDate" value="@ViewBag.startDate" class="form-control form-control-sm ml-2" />
         <span class="form-text ml-2">إلــي</span>
         <input type="date" name="endDate" value="@ViewBag.endDate" class="form-control form-control-sm" />
-        <button type="submit" class="btn btn-sm btn-outline-warning mr-2 font-bold" style="cursor:pointer;">
+        <button type="submit" class="btn btn-sm btn-outline-dark mr-2 font-bold" style="cursor:pointer;">
             <i class="fas fa-search"></i> بحث
         </button>
     </form>
@@ -31,7 +31,7 @@
 
 <div class="container mt-3">
     <table class="table table-sm table-hover table-striped text-center table-responsive" dir="rtl">
-        <thead class="bg-dark text-white font-bold">
+        <thead class="text-white font-bold" style="background-color: #4189c7;">
             <tr>
                 <th>التاريـــخ</th>
                 <th>البيـــان</th>
