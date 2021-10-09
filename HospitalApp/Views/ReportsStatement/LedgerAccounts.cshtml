@@ -11,13 +11,13 @@
 <!-- Search Row in the top -->
 <div class="container d-flex flex-row mb-2" dir="rtl">
     <form asp-action="LedgerAccounts" class="form-inline col-md-8 pr-0">
-        <input type="text" name="id" id="AccName" list="accountsData" class="form-control form-control-sm ml-2" placeholder="اسم الحساب" />
-        <datalist id="accountsData">
+        @*<input type="text"  id="AccName" list="accountsData" placeholder="اسم الحساب" />*@
+        <select id="accountsData" val="" class="form-control form-control-sm ml-2" name="id">
             @foreach (var item in ViewBag.AccountsData)
             {
                 <option value="@item.Id">@item.Name</option>
             }
-        </datalist>
+        </select>
         <span class="form-text ml-2 mr-2"> مـــــن</span>
         <input type="date" name="startDate" value="@ViewBag.startDate" class="form-control form-control-sm ml-2" />
         <span class="form-text ml-2">إلــي</span>
@@ -88,7 +88,15 @@
 
 @section scripts
 {
+    <script src="~/lib/select2/js/select2.min.js"></script>
     <script>
-
+        $(document).ready(function () {
+            $("select").on("focus", function () {
+                $(this).select2({
+                    placeholder: "اسم الحساب",
+                    autoclose: true
+                });
+            });
+        });
     </script>
 }
