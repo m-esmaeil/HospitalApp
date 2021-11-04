@@ -81,7 +81,7 @@ namespace HospitalApp.Controllers
 
                     if (sumCredit != sumDebit)
                     {
-                        ViewBag.TransNotSaveMSG = "القيد غير متوازن";
+                        ModelState.AddModelError("", "القيد غير متوازن");
                         return View(Trans2Create);
                     }
 
@@ -113,7 +113,7 @@ namespace HospitalApp.Controllers
                     }
 
                     _context.SaveChanges();
-                    ViewBag.TransSaveMSG = "تم حفظ القيد بنجاح !";
+                    ViewBag.SaveMSG = "تم حفظ القيد بنجاح !";
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -123,7 +123,7 @@ namespace HospitalApp.Controllers
             catch
             {
                 
-                ViewBag.TransSaveMSG = "لم يتم حفظ القيد ";
+                ViewBag.DoNotSaveMSG = "لم يتم حفظ القيد ";
                 return View(transForm);
             }
 
