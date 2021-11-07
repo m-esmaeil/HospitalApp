@@ -10,9 +10,15 @@ namespace HospitalApp.ViewModel
 {
     public class TransactionsVM
     {
+        [Required(ErrorMessage ="يحب ادخال التاريخ")]
         public DateTime DateVM { get; set; }
+
         public int SerialNumberIdVM { get; set; }
+
+        [Required(ErrorMessage = "يجب ادخال وصف القيد")]
         public string Description { get; set; }
+
+        [Required(ErrorMessage = "يجب ادخال اسم الحساب")]
         public int AccountTreeIdVM { get; set; }
         public AccountsTree AccountsTreeVM { get; set; }
         public decimal[] ValueDebit { get; set; }
