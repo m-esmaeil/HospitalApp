@@ -11,15 +11,6 @@
 
 <div dir="rtl">
     <div class="col-md-8 shadow border-0 rounded-lg mx-auto p-3">
-        @{
-            if (ViewBag.TransSaveMSG != null)
-            {
-                <div class="text-right mb-2">
-                    <i class="fas fa-exclamation-circle text-danger"></i>
-                    <span class="text-danger font-bold">@ViewBag.TransSaveMSG</span>
-                </div>
-            }
-        }
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -30,17 +21,17 @@
                         <span class="input-group-text">رقم القيد</span>
                     </div>
                     <input type="text" disabled class="form-control text-center" value="@ViewBag.EntriesNum" />
-                    @*<span asp-validation-for="EntrySerialize.Serial" class="text-danger"></span>*@
+                   
                 </div>
                 <div class="form-group col-md-6">
-                    <input type="datetime-local" asp-for="DateVM" class="form-control col-12" />
+                    <input type="datetime-local" asp-for="DateVM" class="form-control col-12" id="input-date" />
                     <span asp-validation-for="DateVM" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="form-inline col-12">
                     <input type="text" asp-for="Description" class="form-control col-12" placeholder="وصف القيد" />
-                    <span asp-validation-for="Description"></span>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
 
@@ -49,7 +40,8 @@
             <!-- row to add items of entry journal ??? -->
             <div class="form-row rowCount" id="test" name="row-n[i]">
                 <div class="form-inline mt-2 col-5">
-                    <select id="dataOptions" name="account[]" asp-for="AccountTreeIdVM" class="js-example-basic-single form-control shadow border-secondary col-12 items-name">
+                    <select id="dataOptions" name="account[]" asp-for="AccountTreeIdVM"
+                            class="js-example-basic-single form-control shadow border-secondary col-12 items-name">
 
                         @foreach (var item in Model.AccountsTreeList)
                         {
@@ -135,7 +127,13 @@
             });
         });
 
-        
+        $("#input-date").datepicker({
+            format: "dd/mm/yyyy",
+            autoclose: true,
+            clear: true,
+            startDate: new Date("01/01/2020"),
+            endDate: new Date.now()
+        });
 
     // function re-arrange row's Id
     function reArrangeRows() {
