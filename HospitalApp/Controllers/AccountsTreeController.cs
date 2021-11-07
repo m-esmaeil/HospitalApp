@@ -172,7 +172,7 @@ namespace HospitalApp.Controllers
             _context.AccountsTree.Remove(AccFromView);
             _context.SaveChanges();
 
-            ViewBag.MSGDel = "تم حذف الحساب بنجاح !!";
+            ViewBag.MSGConfirmDel = "تم حذف الحساب بنجاح !!";
             return RedirectToAction(nameof(Index));
         }
 

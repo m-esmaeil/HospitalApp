@@ -5,17 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\bootstrap-datepicker\**" />
-    <Compile Remove="wwwroot\datepicker\**" />
-    <Content Remove="wwwroot\bootstrap-datepicker\**" />
-    <Content Remove="wwwroot\datepicker\**" />
-    <EmbeddedResource Remove="wwwroot\bootstrap-datepicker\**" />
-    <EmbeddedResource Remove="wwwroot\datepicker\**" />
-    <None Remove="wwwroot\bootstrap-datepicker\**" />
-    <None Remove="wwwroot\datepicker\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7">
       <PrivateAssets>all</PrivateAssets>

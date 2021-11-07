@@ -5,13 +5,21 @@
 }
 
 <h3 class="jumbotron p-4 text-right font-weight-bold text-white text-center" style="background-color: #4189c7;">
-    انشاء قيد جديد 
+    انشاء قيد جديد
     <i class="fas fa-edit"></i>
 </h3>
 
 <div dir="rtl">
     <div class="col-md-8 shadow border-0 rounded-lg mx-auto p-3">
-
+        @{
+            if (ViewBag.TransSaveMSG != null)
+            {
+                <div class="text-right mb-2">
+                    <i class="fas fa-exclamation-circle text-danger"></i>
+                    <span class="text-danger font-bold">@ViewBag.TransSaveMSG</span>
+                </div>
+            }
+        }
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -32,7 +40,7 @@
             <div class="row">
                 <div class="form-inline col-12">
                     <input type="text" asp-for="Description" class="form-control col-12" placeholder="وصف القيد" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                    <span asp-validation-for="Description"></span>
                 </div>
             </div>
 
@@ -41,7 +49,7 @@
             <!-- row to add items of entry journal ??? -->
             <div class="form-row rowCount" id="test" name="row-n[i]">
                 <div class="form-inline mt-2 col-5">
-                    <select id="dataOptions" name="account[]" asp-for="AccountTreeIdVM" class="form-control shadow border-secondary col-12 items-name">
+                    <select id="dataOptions" name="account[]" asp-for="AccountTreeIdVM" class="js-example-basic-single form-control shadow border-secondary col-12 items-name">
 
                         @foreach (var item in Model.AccountsTreeList)
                         {
@@ -90,7 +98,7 @@
 <div id="templateRow" style="display:none;">
     <div class="form-row rowCount" id="template" name="row-n[i]">
         <div class="form-inline mt-2 col-md-5">
-            <select asp-for="AccountTreeIdVM" contenteditable="true" class="form-control shadow border-secondary col-12 items-name" name="account[]">
+            <select asp-for="AccountTreeIdVM" class="form-control shadow border-secondary col-12 items-name js-example-basic-single" name="account[]">
 
                 @foreach (var item in Model.AccountsTreeList)
                 {
@@ -120,14 +128,6 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/lib/select2/js/select2.min.js"></script>
     <script>
-
-        //$(document).ready(function () {
-        //    $('select').select2({
-        //        placeholder: 'اسم الحساب',
-        //        autoclose: true,
-        //        areahidden: true
-        //    });
-        //});
         // functin to use Select2 libirary
         $(document).on('focus', 'select', function () {
             $(this).select2({
@@ -135,7 +135,7 @@
             });
         });
 
-
+        
 
     // function re-arrange row's Id
     function reArrangeRows() {
